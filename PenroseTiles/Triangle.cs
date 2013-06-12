@@ -75,13 +75,17 @@ namespace PenroseTiles
                 abc = pa.ToDeviceCoOrd(this);
                 if (TriColor == 0)
                 {
-                    brush = new SolidBrush(Constants.SetSourceRGB(1.0, 0.35, 0.35));
-                    colorpen = new Pen(Constants.SetSourceRGB(1.0, 0.35, 0.35), 1);
+                    Color color = Constants.SetSourceRGB(1.0, 0.35, 0.35);
+                    //Color color = Constants.SetSourceRGB(1.0, 1.0, 1.0);
+                    brush = new SolidBrush(color);
+                    colorpen = new Pen(color, 1);
                 }
                 else
                 {
-                    brush = new SolidBrush(Constants.SetSourceRGB(0.4, 0.4, 1.0));
-                    colorpen = new Pen(Constants.SetSourceRGB(0.4, 0.4, 1.0), 1);
+                    Color color = Constants.SetSourceRGB(0.4, 0.4, 1.0);
+                    //Color color = Constants.SetSourceRGB(1.0, 1.0, 1.0);
+                    brush = new SolidBrush(color);
+                    colorpen = new Pen(color, 1);
                 }
 
                 // color outlines
