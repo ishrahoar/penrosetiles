@@ -30,10 +30,10 @@ namespace PenroseTiles
             plot.Height = ClientRectangle.Height - (2 * plot.Offset);
             Graphics g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            foreach (Triangle abc in tiles.Triangles)
+            Parallel.ForEach(tiles.Triangles, T =>
             {
-                abc.Draw(g, plot);
-            }
+                T.Draw(g, plot);
+            });
             g.Dispose();
         }
     }
