@@ -67,24 +67,36 @@ namespace PenroseTiles
         {
             lock (g)
             {
-                Pen blackpen = new Pen(Color.Black, 1);
+                Pen blackpen = new Pen(Constants.SetSourceRGB(0.2, 0.2, 0.2), 1);
+                Pen colorpen;
                 blackpen.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
-                SolidBrush colorbrush;
+                SolidBrush brush;
                 PointF[] abc;
                 abc = pa.ToDeviceCoOrd(this);
                 if (TriColor == 0)
                 {
-                    colorbrush = new SolidBrush(Constants.SetSourceRGB(1.0, 0.35, 0.35));
+                    brush = new SolidBrush(Constants.SetSourceRGB(1.0, 0.35, 0.35));
+                    colorpen = new Pen(Constants.SetSourceRGB(1.0, 0.35, 0.35), 1);
                 }
                 else
                 {
-                    colorbrush = new SolidBrush(Constants.SetSourceRGB(0.4, 0.4, 1.0));
+                    brush = new SolidBrush(Constants.SetSourceRGB(0.4, 0.4, 1.0));
+                    colorpen = new Pen(Constants.SetSourceRGB(0.4, 0.4, 1.0), 1);
                 }
-                g.FillPolygon(colorbrush, abc);
+
+                // color outlines
+                colorpen.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
+                g.DrawLine(colorpen, abc[0], abc[1]);
+                g.DrawLine(colorpen, abc[1], abc[2]);
+                
+                // fill triangle
+                g.FillPolygon(brush, abc);
+
+                // black outlines
                 g.DrawLine(blackpen, abc[2], abc[0]);
                 g.DrawLine(blackpen, abc[0], abc[1]);
                 blackpen.Dispose();
-                colorbrush.Dispose();
+                brush.Dispose();
             }
             //foreach (Triangle t in Children)
             //{
