@@ -18,7 +18,7 @@ namespace PenroseTiles
         public MainForm()
         {
             InitializeComponent();
-            plot = new PlotArea(1f, -1f, -1f, 1f, 0);
+            plot = new PlotArea(1f, -1f, -1f, 1f, 3);
             this.BackColor = Color.White;
             tiles = new Penrose();
             tiles.Generate(8);
