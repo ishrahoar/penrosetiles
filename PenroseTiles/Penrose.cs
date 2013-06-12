@@ -29,7 +29,7 @@ namespace PenroseTiles
             }
         }
 
-        public void Generate(int depth)
+        public void Generate(int genCount)
         {
             //foreach (Triangle2 T in Triangles)
             //{
@@ -37,7 +37,7 @@ namespace PenroseTiles
             //}
             Parallel.ForEach(Triangles, T =>
             {
-                T.SubDivide(depth);
+                T.SubDivide(genCount);
             });
         }
     }

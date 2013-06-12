@@ -10,55 +10,48 @@ namespace PenroseTiles
 {
     class Triangle
     {
-        public int TriColor { get; set; }
+        private int Colour { get; set; }
         public Complex A { get; set; }
         public Complex B { get; set; }
         public Complex C { get; set; }
-        public List<Triangle> Children;
-        private bool IsDivided { get; set; }
-        private int Level { get; set; }
+        private List<Triangle> SubDivisions;
+        private int Generation { get; set; }
 
-        public Triangle(int color, Complex a, Complex b, Complex c, int level)
+        public Triangle(int color, Complex a, Complex b, Complex c, int gen)
         {
-            TriColor = color;
+            Colour = color;
             A = a;
             B = b;
             C = c;
-            IsDivided = false;
-            Children = new List<Triangle>();
-            Level = level;
+            SubDivisions = new List<Triangle>();
+            Generation = gen;
         }
 
-        public void SubDivide(int depth)
+        public void SubDivide(int genLimit)
         {
-            if (!IsDivided && Level != depth)
+            if (SubDivisions.Count == 0 && Generation != genLimit)
             {
                 Complex p;
                 Complex q;
                 Complex r;
-                if (TriColor == 0)
+                if (Colour == 0)
                 {
                     p = A + ((B - A) / Constants.GoldenRatio);
-                    Children.Add(new Triangle(0, C, p, B, Level + 1));
-                    Children.Add(new Triangle(1, p, C, A, Level + 1));
+                    SubDivisions.Add(new Triangle(0, C, p, B, Generation + 1));
+                    SubDivisions.Add(new Triangle(1, p, C, A, Generation + 1));
                 }
                 else
                 {
                     q = B + ((A - B) / Constants.GoldenRatio);
                     r = B + ((C - B) / Constants.GoldenRatio);
-                    Children.Add(new Triangle(1, r, C, A, Level + 1));
-                    Children.Add(new Triangle(1, q, r, B, Level + 1));
-                    Children.Add(new Triangle(0, r, q, A, Level + 1));
+                    SubDivisions.Add(new Triangle(1, r, C, A, Generation + 1));
+                    SubDivisions.Add(new Triangle(1, q, r, B, Generation + 1));
+                    SubDivisions.Add(new Triangle(0, r, q, A, Generation + 1));
                 }
-                
-                //foreach (Triangle abc in Children)
-                //{
-                //    abc.SubDivide(depth);
-                //}
 
-                Parallel.ForEach(Children, c =>
+                Parallel.ForEach(SubDivisions, t =>
                 {
-                    c.SubDivide(depth);
+                    t.SubDivide(genLimit);
                 });
             }
         }
@@ -73,7 +66,7 @@ namespace PenroseTiles
                 SolidBrush brush;
                 PointF[] abc;
                 abc = pa.ToDeviceCoOrd(this);
-                if (TriColor == 0)
+                if (Colour == 0)
                 {
                     Color color = Constants.SetSourceRGB(1.0, 0.35, 0.35);
                     //Color color = Constants.SetSourceRGB(1.0, 1.0, 1.0);
@@ -102,14 +95,10 @@ namespace PenroseTiles
                 blackpen.Dispose();
                 brush.Dispose();
             }
-            //foreach (Triangle t in Children)
-            //{
-            //    t.Draw(g, pa);
-            //    System.Threading.Thread.Sleep(1);
-            //}
-            Parallel.ForEach(Children, c =>
+
+            Parallel.ForEach(SubDivisions, t =>
             {
-                c.Draw(g, pa);
+                t.Draw(g, pa);
                 System.Threading.Thread.Sleep(1);
             });
         }
