@@ -1,4 +1,27 @@
-﻿using System;
+﻿//New BSD License (BSD)
+//
+//Copyright (c) 2013, Harish K. Rao
+//All rights reserved.
+//
+//Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+//following conditions are met:
+//
+//* Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+//disclaimer.
+//
+//* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+//following disclaimer in the documentation and/or other materials provided with the distribution.
+//
+//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+//AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+//CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+//DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+//USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+//WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+//ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -79,49 +102,41 @@ namespace PenroseTiles
         {
             lock (g) // GDI+ graphics is not threadsafe
             {
-                Pen blackpen = new Pen(Constants.SetSourceRGB(0.2, 0.2, 0.2), 1);
-                Pen colorpen;
-                blackpen.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
+                Pen blackpen, colorpen;
                 SolidBrush brush;
                 PointF[] abc;
+                Color color;
 
                 // convert triangle in world co-ordinates to device co-ordinates
                 abc = pa.ToDeviceCoOrd(this);
-
-                if (Colour == 0)
-                {
-                    Color color = Constants.SetSourceRGB(1.0, 0.35, 0.35);
-                    brush = new SolidBrush(color);
-                    colorpen = new Pen(color, 1);
-                }
-                else
-                {
-                    Color color = Constants.SetSourceRGB(0.4, 0.4, 1.0);
-                    brush = new SolidBrush(color);
-                    colorpen = new Pen(color, 1);
-                }
+                
+                color = (Colour == 0) ? Constants.SetSourceRGB(1.0, 0.35, 0.35) : Constants.SetSourceRGB(0.4, 0.4, 1.0);
 
                 // color outlines
+                colorpen = new Pen(color, 1);
                 colorpen.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
                 g.DrawLine(colorpen, abc[0], abc[1]);
                 g.DrawLine(colorpen, abc[1], abc[2]);
-                
+                colorpen.Dispose();
+
                 // fill triangle
+                brush = new SolidBrush(color);
                 g.FillPolygon(brush, abc);
+                brush.Dispose();
 
                 // black outlines
+                blackpen = new Pen(Constants.SetSourceRGB(0.2, 0.2, 0.2), 1);
+                blackpen.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
                 g.DrawLine(blackpen, abc[2], abc[0]);
                 g.DrawLine(blackpen, abc[0], abc[1]);
                 blackpen.Dispose();
-                colorpen.Dispose();
-                brush.Dispose();
             }
 
-            // Draw in parallel. Sleep(1) to yeild.
+            // Draw in parallel (NOT). Sleep(1) to yeild.
             Parallel.ForEach(SubDivisions, t =>
             {
                 t.Draw(g, pa);
-                System.Threading.Thread.Sleep(1);
+                System.Threading.Thread.Sleep(100);
             });
         }
     }

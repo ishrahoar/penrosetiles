@@ -20,7 +20,7 @@ namespace PenroseTiles
             InitializeComponent();
             
             // define the plot area
-            plot = new PlotArea(1f, -1f, -1f, 1f, 3);
+            plot = new PlotArea(-1f, 1f, -1f, 1f);
 
             this.BackColor = Color.White;
             tiles = new Penrose();
@@ -29,9 +29,10 @@ namespace PenroseTiles
 
         private void MainForm_Paint(object sender, PaintEventArgs e)
         {
+            int offset = 5;
             // set the plot area width/height
-            plot.Width = ClientRectangle.Width - (2 * plot.Offset);
-            plot.Height = ClientRectangle.Height - (2 * plot.Offset);
+            plot.Width = ClientRectangle.Width - (2 * offset);
+            plot.Height = ClientRectangle.Height - (2 * offset);
 
             Graphics g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
