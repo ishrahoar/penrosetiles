@@ -113,6 +113,7 @@ namespace PenroseTiles
                 g.DrawLine(blackpen, abc[2], abc[0]);
                 g.DrawLine(blackpen, abc[0], abc[1]);
                 blackpen.Dispose();
+                colorpen.Dispose();
                 brush.Dispose();
             }
 
